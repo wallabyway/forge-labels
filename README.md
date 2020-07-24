@@ -1,10 +1,12 @@
-### Forge Labels for 3D
+## Forge Labels for 3D
 
 Add "**Text Labels**" to your 3D Models in ForgeViewer, using `THREE.CSS2DRenderer`
 
 [THREE.CSS2DRenderer](https://threejs.org/docs/#examples/en/renderers/CSS2DRenderer) offers faster performance than other DIV-element techniques.  It also uses a familar API from Three.js
 
-###### Screenshot:
+### DEMO: https://wallabyway.github.io/forge-labels/
+
+##### Screenshot:
 ![3d-labels](https://user-images.githubusercontent.com/440241/88363461-fa53a280-cd34-11ea-9b7e-a5fbc48498a3.jpg)
 
 
@@ -27,7 +29,7 @@ Add "**Text Labels**" to your 3D Models in ForgeViewer, using `THREE.CSS2DRender
 > 
 > `viewer.addEventListener(Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT, e => ext.onClickAddLabel(e));`
 
-4. Add this CSS to your `index.html` file
+3. Add this CSS to your `index.html` file
 
 > Customize this CSS to give your labels a unique style.  Add CSS transition animations, SVG or images.
 
