@@ -1,35 +1,38 @@
-/*
-	1. add <script src="./LabelsExtension.js"></script>
-	2. add an array of labels with dbid and text, like this...
-		let labels = [ {dbid:2253, id:"desk"}, {dbid:2253, id:"chair"}, ... etc  ];
-		const ext = viewer.getExtension("LabelsExtension");
-		ext.initLabels(labels, it);
+// CSS labelExtension.js
+
+/* 
+How to use:
+1. add `<script src="./labelsExtension.js"></script>` to your `index.html`
+2. add an array of labels with dbid and text, then call `initLabels()` like this...
+
+	let labels = [ {dbid:2253, id:"desk"}, {dbid:2253, id:"chair"}, ... etc  ];
+	const ext = viewer.getExtension("LabelsExtension");
+	ext.initLabels( labels );
 
 
-	3. (optional) if you want to click on something and add a new custom label, try this...
+> (optional) if you want to click on something to make a new label appear, add this eventListener ...
+	viewer.addEventListener(Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT, e => ext.onClickAddLabel(e));
 
-		viewer.addEventListener(Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT, e => ext.onClickAddLabel(e));
+3. Add this CSS to your `index.html` file
 
+	<style>
+		.label:hover { font-size:14px; z-index:2; width:36px;  opacity: 0.8; background-color: grey; border: 3px solid white }
+		.label:focus { font-size:16px; z-index:2; width:36px;  opacity: 1; background-color: brown; border: 4px solid white; outline: none;}
+		.label {
+			width:26px;
+			font-size:12px;
+			overflow: hidden;
+			border: 1px solid white;
+			border-radius: 10px;
+			background: black;
+			color: white;
+			padding: 0 8px 0 8px;
+			opacity: 0.6;
+		}
+	</style>
 
-	4. Style your labels, by adding this CSS to your index.html file... ( you can also change the hover and focus styles )
-
-		<style>
-			.label:hover { font-size:14px; z-index:2; width:36px;  opacity: 0.8; background-color: grey; border: 3px solid white }
-			.label:focus { font-size:16px; z-index:2; width:36px;  opacity: 1; background-color: brown; border: 4px solid white; outline: none;}
-			.label {
-				width:26px;
-				font-size:12px;
-				overflow: hidden;
-				border: 1px solid white;
-				border-radius: 10px;
-				background: black;
-				color: white;
-				padding: 0 8px 0 8px;
-				opacity: 0.6;
-			}
-		</style>
+> Customize this CSS to give your labels a unique style.  Add CSS transition animations, SVG or images.
 */
-
 
 class LabelsExtension extends Autodesk.Viewing.Extension {
 	constructor(viewer, options) {
