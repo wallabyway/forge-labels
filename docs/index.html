@@ -19,9 +19,8 @@ steelcs - init('dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dGVzdGluMS80RSUyME1hcC5ud2M'
       <div class="container">
         <ul class="navbar-list">
           <li class="navbar-item"><img class="navbar-button navbar-img" src="https://wallabyway.github.io/floor-animation/logo.png"/></li>
-          <li class="navbar-item"><button onClick="setHomeView()" class="navbar-button button-primary">Drone View</button></li>
-          <li class="navbar-item"><button onClick="setWalkView()" class="navbar-button button-primary">Walk</button></li>
-          <li class="navbar-itemr mobile"><a class="navbar-button button" href="https://github.com/wallabyway/forge-point-clouds">Github</a></li>
+          <li class="navbar-item"><button onClick="alert('do nothing')" class="navbar-button button-primary">Button1</button></li>
+          <li class="navbar-itemr mobile"><a class="navbar-button button" href="https://github.com/wallabyway/forge-labels">Github</a></li>
         </ul>
       </div>
     </nav>
@@ -90,6 +89,18 @@ function init(urn) {
         // set up a nice view of the first floor
         viewer.setCutPlanes([new THREE.Vector4(0,0,1,8.1)]);
         viewer.fitToView([1942]);
+
+        // improve performance, by turning off FX
+        // window.devicePixelRatio = 1.0;
+        viewer.impl.setOptimizeNavigation(true); // turn off SAO when camera moves
+        viewer.setQualityLevel(true, true); // activate ambient occlusion and FXAA
+        viewer.impl.toggleEnvMapBackground(false); // reduce the effort on your fragment shader.
+
+        // reduce draw calls
+        viewer.impl.toggleGroundShadow(false); // turn off that ground shadow render pass
+        viewer.setDisplayEdges(false); // don't render edge lines in AEC buildings.  this is a big one.
+
+
 
         // create our floating text labels
         let labels = [
