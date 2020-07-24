@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="https://wallabyway.github.io/floor-animation/skeleton.min.css">
+    <title>3D-Labels example</title>
+</head>
+<!--
+rac-adv - init('dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bXVsdGktbW9kZWwvcmV2aXRfYWR2YW5jZWQucnZ0') 
+steelcs - init('dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6dGVzdGluMS80RSUyME1hcC5ud2M')
+-->
+<body onload="init('dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6bXVsdGktbW9kZWwvcmV2aXRfYWR2YW5jZWQucnZ0')" style="margin:0; overflow-y: hidden;">
+ <div class="container">
+    <nav class="navbar">
+      <div class="container">
+        <ul class="navbar-list">
+          <li class="navbar-item"><img class="navbar-button navbar-img" src="https://wallabyway.github.io/floor-animation/logo.png"/></li>
+          <li class="navbar-item"><button onClick="setHomeView()" class="navbar-button button-primary">Drone View</button></li>
+          <li class="navbar-item"><button onClick="setWalkView()" class="navbar-button button-primary">Walk</button></li>
+          <li class="navbar-itemr mobile"><a class="navbar-button button" href="https://github.com/wallabyway/forge-point-clouds">Github</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <div id="forgeViewer"></div>
+</body>
+
+<link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.css">
+<script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.js"></script>
+<script src="https://xf79h9aa3l.execute-api.us-west-2.amazonaws.com/toolkit2/api/_adsk.js"></script>
+<script src="./LabelsExtension.js"></script>
+
+<!-- Styling for 3D Labels -->
+<style>
+    .label:hover { font-size:14px; z-index:2; width:36px;  opacity: 0.8; background-color: grey; border: 3px solid white }
+    .label:focus { font-size:16px; z-index:2; width:36px;  opacity: 1; background-color: brown; border: 4px solid white; outline: none;}
+    .label {
+        width:26px;
+        font-size:12px;
+        overflow: hidden;
+        border: 1px solid white;
+        border-radius: 10px;
+        background: black;
+        color: white;
+        padding: 0 8px 0 8px;
+        opacity: 0.6;
+    }
+</style>
+
+<script>
+
+let ext, viewer = null;
+
+
+function init(urn) {
+
+    const options = {
+        env: 'AutodeskProduction',
+        accessToken: _adsk.token.access_token,
+        isAEC: true,
+    };
+
+    Autodesk.Viewing.Initializer(options, () => {
+        const div = document.getElementById('forgeViewer');
+        const config = { 
+            disabledExtensions: {diffTool:true}, 
+            extensions: ["LabelsExtension"],
+            useADP:false
+        };
+
+        viewer = new Autodesk.Viewing.Private.GuiViewer3D(div, config);
+        viewer.start();
+        viewer.setTheme("light-theme");
+
+        Autodesk.Viewing.Document.load(`urn:${urn}`, (doc) => {
+            doc.downloadAecModelData();
+            var viewables = doc.getRoot().getDefaultGeometry();
+            viewer.loadDocumentNode(doc, viewables);
+            viewer.addEventListener(Autodesk.Viewing.GEOMETRY_LOADED_EVENT, e => onLoadFinished());
+            
+        });
+    });
+
+
+    function onLoadFinished() {
+        // set up a nice view of the first floor
+        viewer.setCutPlanes([new THREE.Vector4(0,0,1,8.1)]);
+        viewer.fitToView([1942]);
+
+        // create our floating text labels
+        let labels = [
+            {dbid:2253, id:"rm"}, {dbid:2253, id:"rm"},{dbid: 2254, id:"rm"},{dbid: 2256, id:"rm"},{dbid: 2277, id:"rm"}, {dbid: 2282, id:"rm"}, {dbid: 2286, id:"rm"},{dbid: 2290, id:"rm"},{dbid: 2292, id:"rm"},{dbid: 2446, id:"rm"},{dbid: 2449, id:"rm"},{dbid: 2650, id:"rm"},{dbid: 2680, id:"rm"},{dbid: 2685, id:"rm"},{dbid: 2691, id:"rm"},{dbid: 2699, id:"rm"},{dbid: 3871, id:"rm"},{dbid: 4423, id:"rm"},{dbid: 4431, id:"rm"},{dbid: 4436, id:"rm"},{dbid: 4443, id:"rm"},{dbid: 4448, id:"rm"},{dbid: 4453, id:"rm"},{dbid: 4458, id:"rm"},{dbid: 4463, id:"rm"},{dbid: 4468, id:"rm"},{dbid: 4473, id:"rm"},{dbid: 4478, id:"rm"},{dbid: 4483, id:"rm"},{dbid: 4488, id:"rm"},{dbid: 4493, id:"rm"},{dbid: 4498, id:"rm"},{dbid: 4654, id:"rm"},{dbid: 4801, id:"rm"},{dbid: 6256, id:"rm"},{dbid: 6260, id:"rm"}, {dbid: 6265, id:"rm"}
+        ];
+
+        const ext = viewer.getExtension("LabelsExtension");
+        ext.initLabels(labels);
+        viewer.addEventListener(Autodesk.Viewing.AGGREGATE_SELECTION_CHANGED_EVENT, e => ext.onClickAddLabel(e));
+    }
+
+
+}
+</script>
